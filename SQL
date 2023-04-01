@@ -1,0 +1,219 @@
+1. Scalar functions are functions in SQL that take input parameters and return a single value as the result. They can be used in SQL statements wherever an expression can be used, such as in SELECT, WHERE, or HAVING clauses.
+
+Here's an example of a scalar function in SQL that takes two integers as input parameters and returns their sum:
+
+CREATE FUNCTION AddIntegers(@x INT, @y INT)
+RETURNS INT
+AS
+BEGIN
+  RETURN @x + @y
+END
+
+This function can then be used in a SQL query like this:
+
+SELECT dbo.AddIntegers(5, 10) AS Sum
+This would return the result 15 as the value of the Sum column in the query output.
+
+2. Joins in SQL are used to combine rows from two or more tables based on a related column between them. There are several types of joins, including INNER JOIN, LEFT OUTER JOIN, RIGHT OUTER JOIN, and FULL OUTER JOIN.
+
+example using INNER JOIN to combine data from two tables:
+
+-- Table1: Employees
+CREATE TABLE Employees (
+   EmpID INT PRIMARY KEY,
+   FirstName VARCHAR(50),
+   LastName VARCHAR(50),
+   DepartmentID INT
+);
+
+INSERT INTO Employees (EmpID, FirstName, LastName, DepartmentID) VALUES
+(1, 'John', 'Doe', 1),
+(2, 'Jane', 'Doe', 2),
+(3, 'Bob', 'Smith', 1),
+(4, 'Sara', 'Johnson', 3);
+
+-- Table2: Departments
+CREATE TABLE Departments (
+   DepartmentID INT PRIMARY KEY,
+   DepartmentName VARCHAR(50)
+);
+
+INSERT INTO Departments (DepartmentID, DepartmentName) VALUES
+(1, 'IT'),
+(2, 'HR'),
+(3, 'Marketing');
+
+-- Inner join to get the employees with their department names
+SELECT e.FirstName, e.LastName, d.DepartmentName
+FROM Employees e
+INNER JOIN Departments d
+ON e.DepartmentID = d.DepartmentID;
+
+OUTPUT:
+
+FirstName   LastName    DepartmentName
+---------------------------------------
+John        Doe         IT
+Jane        Doe         HR
+Bob         Smith       IT
+Sara        Johnson     Marketing
+
+
+This query combines data from the Employees table and the Departments table based on the DepartmentID column. The result is a table that includes columns from both tables, but only for employees that have a matching department in the Departments table.
+
+In this example, the INNER JOIN keyword is used to return only the rows that have matching values in both tables. If there were no matching values, the rows would be excluded from the result.
+
+
+3. To rename a column in SQL, you can use the sp_rename system stored procedure. Here's an example query to rename a column in a table:
+
+-- Original table with column name
+CREATE TABLE MyTable (
+   Column1 INT,
+   Column2 VARCHAR(50)
+);
+
+-- Rename the column name
+EXEC sp_rename 'MyTable.Column1', 'NewColumnName', 'COLUMN';
+
+-- New table with renamed column name
+SELECT NewColumnName, Column2
+FROM MyTable;
+
+
+In this example, the sp_rename stored procedure is used to rename the Column1 column in the MyTable table to NewColumnName. The COLUMN parameter is used to indicate that we are renaming a column.
+
+After renaming the column, you can use the new column name in a SELECT statement or any other SQL query that references the table. In this example, we select both columns from the MyTable table using the new column name in the SELECT statement.
+
+
+4.Write a SQL query to find duplicate records.
+
+To find duplicate records in SQL, you can use the GROUP BY clause and the HAVING clause to identify the records with more than one occurrence. Here's an example query to find duplicate records in a table:
+
+
+SELECT Column1, Column2, COUNT(*) as DuplicateCount
+FROM MyTable
+GROUP BY Column1, Column2
+HAVING COUNT(*) > 1;
+
+
+
+In this example, the query groups the records in the MyTable table by the values in Column1 and Column2 and counts the number of occurrences of each group using the COUNT(*) function. The HAVING clause is then used to filter the results to only include groups with a count greater than one, indicating that they are duplicate records.
+
+This query would return a result set with the columns Column1, Column2, and DuplicateCount, where DuplicateCount is the number of occurrences of each duplicate record group.
+
+
+5.How do we use the DISTINCT statement? What are its use?
+
+The DISTINCT statement in SQL is used to return only unique values in a query result. It can be used in the SELECT statement to eliminate duplicate values from the result set.
+
+Here's an example query that uses the DISTINCT statement:
+
+
+SELECT DISTINCT Column1, Column2
+FROM MyTable;
+
+In this example, the query selects unique values of Column1 and Column2 from the MyTable table. The DISTINCT statement ensures that the result set only includes distinct combinations of values for the specified columns.
+
+
+6.Remove duplicate from the table
+
+To remove duplicate rows from a table in SQL, you can use the DISTINCT keyword in combination with the INSERT INTO statement to create a new table with only the distinct rows. Here's an example query to remove duplicates from a table:
+
+
+-- Create a new table with distinct rows
+SELECT DISTINCT *
+INTO NewTable
+FROM MyTable;
+
+-- Drop the original table
+DROP TABLE MyTable;
+
+-- Rename the new table to the original table name
+EXEC sp_rename 'NewTable', 'MyTable';
+
+In this example, the SELECT DISTINCT statement is used to select only distinct rows from the MyTable table, and the INTO keyword is used to create a new table called NewTable with the distinct rows.
+
+7.Print max salary for a particular department.
+
+To print the maximum salary for a particular department in SQL, you can use the MAX function and the WHERE clause to filter the results by department. Here's an example query:
+
+SELECT MAX(Salary) AS MaxSalary
+FROM Employee
+WHERE Department = 'Sales';
+
+
+In this example, the query selects the maximum value of the Salary column from the Employee table where the Department column is equal to 'Sales'. The MAX function is used to find the highest salary value, and the WHERE clause is used to filter the results to only include employees in the Sales department.
+
+
+8.Use different operators in SQL.
+
+SQL provides a wide range of operators for performing various types of operations, such as arithmetic operations, logical operations, and comparison operations. Here are some examples of operators in SQL:
+
+Arithmetic operators:
+
+SELECT 10 + 5; -- Addition
+SELECT 10 - 5; -- Subtraction
+SELECT 10 * 5; -- Multiplication
+SELECT 10 / 5; -- Division
+SELECT 10 % 3; -- Modulo
+
+
+2.Comparison operators:
+
+SELECT * FROM Employee WHERE Age > 30; -- Greater than
+SELECT * FROM Employee WHERE Age >= 30; -- Greater than or equal to
+SELECT * FROM Employee WHERE Age < 30; -- Less than
+SELECT * FROM Employee WHERE Age <= 30; -- Less than or equal to
+SELECT * FROM Employee WHERE Age = 30; -- Equal to
+SELECT * FROM Employee WHERE Age <> 30; -- Not equal to
+
+3.Logical operators:
+
+SELECT * FROM Employee WHERE Age > 30 AND Salary > 50000; -- AND
+SELECT * FROM Employee WHERE Age > 30 OR Salary > 50000; -- OR
+SELECT * FROM Employee WHERE NOT Age > 30; -- NOT
+
+
+4.String operators:
+
+SELECT 'Hello' || ' ' || 'World'; -- Concatenation
+SELECT 'Hello' LIKE 'H%'; -- Pattern matching
+SELECT 'Hello' IN ('Hello', 'World', 'SQL'); -- Membership
+
+
+
+9."How Can i create table with same structure with data
+of Employee table?"
+
+To create a new table with the same structure and data as an existing table, you can use the CREATE TABLE statement with a SELECT statement that selects all columns from the existing table. Here's an example query to create a new table called Employee_New with the same structure and data as an existing table called Employee:
+
+
+-- Create a new table with the same structure as the existing table
+CREATE TABLE Employee_New
+AS SELECT *
+FROM Employee
+WHERE 1 = 0;
+
+-- Copy the data from the existing table to the new table
+INSERT INTO Employee_New
+SELECT *
+FROM Employee;
+
+In this example, the first statement creates a new table called Employee_New using the CREATE TABLE statement with a SELECT statement that selects all columns from the Employee table where 1 equals 0. This creates a new table with the same structure as the Employee table, but without any data.
+
+
+10."Find Query to get information of Employee where
+Employee is not assigned to the department"
+
+To find the information of employees who are not assigned to a specific department, you can use a SQL query with a LEFT JOIN and a WHERE clause to filter the results. Here's an example query:
+
+SELECT e.*
+FROM Employee e
+LEFT JOIN Department d ON e.DepartmentID = d.DepartmentID
+WHERE d.DepartmentID IS NULL;
+
+
+In this example, the query selects all columns from the Employee table and left joins the Department table on the DepartmentID column. This means that all employees are included in the results, even if they are not assigned to a department.
+
+
+
